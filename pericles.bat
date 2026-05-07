@@ -40,29 +40,34 @@ if not exist "%PYTHON%" (
 
 :: ── Detectar navegadores instalados ──────────────────────────────────────
 set COUNT=0
+set CHOSEN_EXE=
 
-set _EDGE=%ProgramFiles(x86)%\Microsoft\Edge\Application\msedge.exe
-if not exist "%_EDGE%" set _EDGE=%ProgramFiles%\Microsoft\Edge\Application\msedge.exe
-if exist "%_EDGE%" (
+:: Edge (64-bit primero, luego x86)
+set "_TMP=%ProgramFiles%\Microsoft\Edge\Application\msedge.exe"
+if not exist "!_TMP!" set "_TMP=C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+if exist "!_TMP!" (
     set /a COUNT+=1
-    set NAME1=Microsoft Edge
-    set EXE1=%_EDGE%
+    set "NAME!COUNT!=Microsoft Edge"
+    set "EXE!COUNT!=!_TMP!"
 )
 
-set _CHROME=%ProgramFiles%\Google\Chrome\Application\chrome.exe
-if not exist "%_CHROME%" set _CHROME=%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe
-if exist "%_CHROME%" (
+:: Chrome (64-bit, x86, e instalacion de usuario)
+set "_TMP=%ProgramFiles%\Google\Chrome\Application\chrome.exe"
+if not exist "!_TMP!" set "_TMP=C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+if not exist "!_TMP!" set "_TMP=!LOCALAPPDATA!\Google\Chrome\Application\chrome.exe"
+if exist "!_TMP!" (
     set /a COUNT+=1
-    set NAME%COUNT%=Google Chrome
-    set EXE%COUNT%=%_CHROME%
+    set "NAME!COUNT!=Google Chrome"
+    set "EXE!COUNT!=!_TMP!"
 )
 
-set _FF=%ProgramFiles%\Mozilla Firefox\firefox.exe
-if not exist "%_FF%" set _FF=%ProgramFiles(x86)%\Mozilla Firefox\firefox.exe
-if exist "%_FF%" (
+:: Firefox (64-bit, luego x86)
+set "_TMP=%ProgramFiles%\Mozilla Firefox\firefox.exe"
+if not exist "!_TMP!" set "_TMP=C:\Program Files (x86)\Mozilla Firefox\firefox.exe"
+if exist "!_TMP!" (
     set /a COUNT+=1
-    set NAME%COUNT%=Mozilla Firefox
-    set EXE%COUNT%=%_FF%
+    set "NAME!COUNT!=Mozilla Firefox"
+    set "EXE!COUNT!=!_TMP!"
 )
 
 :: ── Seleccion de navegador ────────────────────────────────────────────────
