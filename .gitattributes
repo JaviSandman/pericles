@@ -1,0 +1,5 @@
+# Git LFS — archivos grandes (parquets de datos electorales)
+# Requiere: git lfs install  (una vez por máquina)
+#           git lfs pull     (después de clonar)
+
+data/*.parquet filter=lfs diff=lfs merge=lfs -text

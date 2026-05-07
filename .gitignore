@@ -1,0 +1,30 @@
+# === Datos — no van al repo de código ===
+# Los parquets se distribuyen por GitHub Releases (ZIP generado por empaquetar.ps1)
+data/*.parquet
+
+# El GeoJSON de provincias SÍ va al repo (solo 1.3 MB, estático)
+!data/spain-provinces.geojson
+
+# === Entorno virtual ===
+.venv/
+
+# === Caché Python ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# === Streamlit ===
+.streamlit/secrets.toml
+
+# === ZIPs generados por empaquetar.ps1 ===
+*.zip
+
+# === Scripts de desarrollo (solo para el mantenedor) ===
+sync-to-dist.ps1
+empaquetar.ps1
+
+# === Temporales y sistema ===
+*.tmp
+.DS_Store
+Thumbs.db
