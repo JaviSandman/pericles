@@ -3,10 +3,10 @@
 .SYNOPSIS
     Instala Herramienta Pericles en el equipo local.
 .DESCRIPTION
-    1. Verifica que Python 3.10+ está instalado.
+    1. Verifica Python 3.10+ e instala con winget si no esta presente.
     2. Crea un entorno virtual (.venv) dentro de esta carpeta.
     3. Instala las dependencias (requirements.txt).
-    4. Verifica que los datos están disponibles en data/.
+    4. Verifica que los datos esten disponibles en data/.
     Ejecución: clic derecho → "Ejecutar con PowerShell"
                o desde terminal: .\instalar.ps1
 #>
@@ -42,27 +42,43 @@ if ($osVersion.Major -lt 10) {
 }
 Write-Host "   OK: Windows $($osVersion.Major).$($osVersion.Minor)" -ForegroundColor Green
 # ── 1. Verificar Python ──────────────────────────────────────────────────────
-Write-Host ">> Verificando Python..." -ForegroundColor Yellow
-$pythonCmd = $null
-foreach ($cmd in @("python", "python3", "py")) {
-    try {
-        $ver = & $cmd --version 2>&1
-        if ($ver -match "Python (\d+)\.(\d+)") {
-            $major = [int]$Matches[1]; $minor = [int]$Matches[2]
-            if ($major -ge 3 -and $minor -ge 10) {
-                $pythonCmd = $cmd
-                Write-Host "   Encontrado: $ver" -ForegroundColor Green
-                break
+function Find-Python {
+    foreach ($cmd in @("python", "python3", "py")) {
+        try {
+            $ver = & $cmd --version 2>&1
+            if ($ver -match "Python (\d+)\.(\d+)") {
+                if ([int]$Matches[1] -ge 3 -and [int]$Matches[2] -ge 10) {
+                    return $cmd
+                }
             }
-        }
-    } catch {}
+        } catch {}
+    }
+    return $null
 }
+
+Write-Host ">> Verificando Python..." -ForegroundColor Yellow
+$pythonCmd = Find-Python
+
 if (-not $pythonCmd) {
-    Write-Host "ERROR: Se necesita Python 3.10 o superior." -ForegroundColor Red
-    Write-Host "       Descargalo desde https://www.python.org/downloads/" -ForegroundColor Red
-    Read-Host "Pulsa Enter para salir"
-    exit 1
+    Write-Host "   Python 3.10+ no encontrado. Instalando con winget..." -ForegroundColor Yellow
+    winget install Python.Python.3.13 --silent --accept-source-agreements --accept-package-agreements
+    # Refrescar PATH para que python sea visible en esta sesion
+    $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" +
+                [System.Environment]::GetEnvironmentVariable("PATH", "User")
+    $pythonCmd = Find-Python
+    if (-not $pythonCmd) {
+        Write-Host ""
+        Write-Host ">> Paso adicional necesario:" -ForegroundColor Cyan
+        Write-Host "   Cierra esta ventana y vuelve a ejecutar instalar.bat." -ForegroundColor Yellow
+        Write-Host "   Si el problema persiste, instala Python manualmente:" -ForegroundColor DarkGray
+        Write-Host "   https://www.python.org/downloads/ (marca 'Add to PATH')" -ForegroundColor DarkGray
+        Read-Host "Pulsa Enter para salir"
+        exit 1
+    }
 }
+
+$verFound = & $pythonCmd --version 2>&1
+Write-Host "   Encontrado: $verFound" -ForegroundColor Green
 
 # ── 2. Crear entorno virtual ─────────────────────────────────────────────────
 if (Test-Path (Join-Path $VENV "Scripts\python.exe")) {
@@ -74,7 +90,6 @@ if (Test-Path (Join-Path $VENV "Scripts\python.exe")) {
 }
 
 $pip    = Join-Path $VENV "Scripts\pip.exe"
-$python = Join-Path $VENV "Scripts\python.exe"
 
 # ── 3. Instalar dependencias ─────────────────────────────────────────────────
 Write-Host ">> Instalando dependencias (puede tardar unos minutos)..." -ForegroundColor Yellow
