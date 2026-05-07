@@ -24,7 +24,22 @@ Write-Host "============================================" -ForegroundColor Cyan
 Write-Host "   Herramienta Pericles — Instalador"        -ForegroundColor Cyan
 Write-Host "============================================" -ForegroundColor Cyan
 Write-Host ""
-
+# ── 0. Verificar Windows 10+ ───────────────────────────────────────────────────
+Write-Host ">> Verificando sistema operativo..." -ForegroundColor Yellow
+$osVersion = [Environment]::OSVersion.Version
+if ($osVersion.Major -lt 10) {
+    Write-Host "" 
+    Write-Host "  ERROR: Esta aplicacion requiere Windows 10 o superior." -ForegroundColor Red
+    Write-Host "         Tu sistema es Windows $($osVersion.Major).$($osVersion.Minor)." -ForegroundColor Red
+    Write-Host ""
+    Write-Host "  Windows 7 y Windows 8 no son compatibles porque:" -ForegroundColor Yellow
+    Write-Host "    - Python 3.10+ no esta disponible para esos sistemas." -ForegroundColor Yellow
+    Write-Host "    - Carecen de soporte de seguridad actualizado." -ForegroundColor Yellow
+    Write-Host ""
+    Read-Host "Pulsa Enter para salir"
+    exit 1
+}
+Write-Host "   OK: Windows $($osVersion.Major).$($osVersion.Minor)" -ForegroundColor Green
 # ── 1. Verificar Python ──────────────────────────────────────────────────────
 Write-Host ">> Verificando Python..." -ForegroundColor Yellow
 $pythonCmd = $null
