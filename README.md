@@ -6,7 +6,7 @@ Análisis electoral interactivo de España (1977–2024). Streamlit + datos ofic
 
 **Requisitos**: Windows 10/11 · Python 3.10 o superior ([descargar](https://www.python.org/downloads/))
 
-1. Descarga el archivo **`pericles-vX.Y.Z.zip`** desde la sección [Releases](../../releases).
+1. Descarga el archivo **[pericles-v1.0.0.zip](https://github.com/JaviSandman/pericles/releases/download/v1.0.0/pericles-v1.0.0.zip)** (182 MB).
 2. Extrae la carpeta en cualquier lugar de tu disco duro.
 3. Doble clic en **`instalar.bat`** — descarga las dependencias y prepara la aplicación. Solo hay que hacerlo una vez.
 4. Doble clic en **`pericles.bat`** para abrir la aplicación en el navegador.
